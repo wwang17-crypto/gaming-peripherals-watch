@@ -1,7 +1,10 @@
 # Runs Claude Code headlessly to generate today's report, then commits and pushes to GitHub.
 # Designed for unattended execution via Windows Task Scheduler.
 
-$ErrorActionPreference = "Stop"
+# NB: deliberately NOT setting $ErrorActionPreference = "Stop".
+# In PS 5.1, "Stop" + `2>&1` on native exes (git, claude) wraps any stderr line in a
+# NativeCommandError and throws, even when the exe returned exit code 0
+# (e.g. git's "LF will be replaced by CRLF" warning). Use $LASTEXITCODE instead.
 
 # Task Scheduler does not inherit the interactive user's PATH reliably.
 # Add the two tools we depend on explicitly.
@@ -36,15 +39,11 @@ Today is $today. Read PROMPT.md in this directory and execute its instructions f
 
 Log "Invoking Claude Code..."
 
-try {
-    # Pipe $null into stdin so claude does not warn about missing stdin in non-interactive sessions.
-    $null | & claude --print --dangerously-skip-permissions $prompt 2>&1 | ForEach-Object {
-        Add-Content -Path $logFile -Value $_ -Encoding utf8
-    }
-} catch {
-    Log "ERROR invoking claude: $_"
-    exit 1
+# Pipe $null into stdin so claude does not warn about missing stdin in non-interactive sessions.
+$null | & claude --print --dangerously-skip-permissions $prompt 2>&1 | ForEach-Object {
+    Add-Content -Path $logFile -Value $_ -Encoding utf8
 }
+if ($LASTEXITCODE -ne 0) { Log "ERROR: claude exited with code $LASTEXITCODE"; exit 1 }
 
 $reportFile = "reports\$today.html"
 if (-not (Test-Path $reportFile)) {
@@ -55,25 +54,21 @@ if (-not (Test-Path $reportFile)) {
 Log "Report generated: $reportFile"
 Log "Committing to git..."
 
-try {
-    git add "reports/$today.html" "index.html" 2>&1 | Out-Null
-    if ($LASTEXITCODE -ne 0) { Log "ERROR: git add failed"; exit 1 }
+# Pipe stderr through Out-Null/log without 2>&1 to avoid PS 5.1 NativeCommandError wrapping.
+git add "reports/$today.html" "index.html" | Out-Null
+if ($LASTEXITCODE -ne 0) { Log "ERROR: git add failed (exit $LASTEXITCODE)"; exit 1 }
 
-    git diff --cached --quiet
-    if ($LASTEXITCODE -eq 0) {
-        Log "No changes to commit. Exiting."
-        exit 0
-    }
-
-    git commit -m "Daily report $today" 2>&1 | ForEach-Object { Add-Content -Path $logFile -Value $_ -Encoding utf8 }
-    if ($LASTEXITCODE -ne 0) { Log "ERROR: git commit failed"; exit 1 }
-
-    git push 2>&1 | ForEach-Object { Add-Content -Path $logFile -Value $_ -Encoding utf8 }
-    if ($LASTEXITCODE -ne 0) { Log "ERROR: git push failed"; exit 1 }
-} catch {
-    Log "ERROR during git operations: $_"
-    exit 1
+git diff --cached --quiet
+if ($LASTEXITCODE -eq 0) {
+    Log "No changes to commit. Exiting."
+    exit 0
 }
+
+git commit -m "Daily report $today" | ForEach-Object { Add-Content -Path $logFile -Value $_ -Encoding utf8 }
+if ($LASTEXITCODE -ne 0) { Log "ERROR: git commit failed (exit $LASTEXITCODE)"; exit 1 }
+
+git push | ForEach-Object { Add-Content -Path $logFile -Value $_ -Encoding utf8 }
+if ($LASTEXITCODE -ne 0) { Log "ERROR: git push failed (exit $LASTEXITCODE)"; exit 1 }
 
 $duration = [int]((Get-Date) - $startTime).TotalSeconds
 Log "Done in ${duration}s. GitHub Pages will rebuild in ~1 minute."
