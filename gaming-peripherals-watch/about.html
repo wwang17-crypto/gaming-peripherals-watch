@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About · Gaming Peripherals Watch</title>
+<link rel="stylesheet" href="assets/style.css" />
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-en">Gaming Peripherals Watch</span>
+      About
+    </div>
+    <div class="topbar-right">
+      <nav class="nav">
+        <a href="index.html">Reports</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <span class="micro">About</span>
+        <h2>What this dashboard tracks</h2>
+      </div>
+    </div>
+    <div class="notes">
+      A daily scan of the gaming peripherals market, focused on two signals:
+      <strong>(1)</strong> new gaming mice and keyboard announcements from any major brand, and
+      <strong>(2)</strong> wishlist requests, feature asks, and complaints about Logitech gaming products.
+      Reports are generated daily and indexed on the <a href="index.html">Reports page</a>.
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <span class="micro">Tracked brands · Announcements</span>
+        <h2>Coverage list</h2>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="column">
+        <h3>Tier 1 — flagship makers</h3>
+        <ul class="feedback-list" style="cursor:default">
+          <li class="feedback-item" style="cursor:default"><p>Logitech · Razer · Corsair · SteelSeries · HyperX · ASUS ROG · Roccat</p></li>
+        </ul>
+      </div>
+      <div class="column">
+        <h3>Tier 2 — enthusiast / esports</h3>
+        <ul class="feedback-list" style="cursor:default">
+          <li class="feedback-item" style="cursor:default"><p>Glorious · Pulsar · Lamzu · Endgame Gear · Zowie / BenQ · Finalmouse · VAXEE · WLMouse · Ninjutso</p></li>
+        </ul>
+      </div>
+      <div class="column">
+        <h3>Tier 3 — keyboard-first &amp; adjacent</h3>
+        <ul class="feedback-list" style="cursor:default">
+          <li class="feedback-item" style="cursor:default"><p>Wooting · Keychron · Mountain · Cooler Master · NZXT</p></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <span class="micro">Logitech feedback sources</span>
+        <h2>Where we listen</h2>
+      </div>
+    </div>
+    <div class="grid">
+      <article class="card" style="cursor:default">
+        <div class="card-head">
+          <div class="card-logo"><img src="https://www.google.com/s2/favicons?domain=reddit.com&sz=128" alt="Reddit" loading="lazy"></div>
+          <div class="card-headtext">
+            <div class="card-brand">Reddit</div>
+            <h3 class="card-title">Community subreddits</h3>
+          </div>
+        </div>
+        <p class="card-summary">r/LogitechG · r/MouseReview · r/MechanicalKeyboards — daily threads, polls, and reviews.</p>
+      </article>
+      <article class="card" style="cursor:default">
+        <div class="card-head">
+          <div class="card-logo"><img src="https://www.google.com/s2/favicons?domain=logitech.com&sz=128" alt="Logitech" loading="lazy"></div>
+          <div class="card-headtext">
+            <div class="card-brand">Logitech</div>
+            <h3 class="card-title">Community forums</h3>
+          </div>
+        </div>
+        <p class="card-summary">Official support and feature-request boards.</p>
+      </article>
+      <article class="card" style="cursor:default">
+        <div class="card-head">
+          <div class="card-logo"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128" alt="YouTube" loading="lazy"></div>
+          <div class="card-headtext">
+            <div class="card-brand">YouTube</div>
+            <h3 class="card-title">Reviewer comments</h3>
+          </div>
+        </div>
+        <p class="card-summary">Rocket Jump Ninja · Optimum · Hardware Canucks — comment-section sentiment on recent Logitech reviews.</p>
+      </article>
+      <article class="card" style="cursor:default">
+        <div class="card-head">
+          <div class="card-logo"><img src="https://www.google.com/s2/favicons?domain=x.com&sz=128" alt="X" loading="lazy"></div>
+          <div class="card-headtext">
+            <div class="card-brand">X / Twitter</div>
+            <h3 class="card-title">@LogitechG mentions</h3>
+          </div>
+        </div>
+        <p class="card-summary">Tagged complaints, replies, and feature requests in real time.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <span class="micro">Announcement sources</span>
+        <h2>Press &amp; events</h2>
+      </div>
+    </div>
+    <div class="notes">
+      Brand newsrooms and press releases · The Verge · Tom's Hardware · PCGamer · RTINGS new-product feeds ·
+      Trade events: CES (Jan) · Computex (Jun) · Gamescom (Aug) · IFA (Sep).
+    </div>
+  </section>
+
+  <footer class="footer">
+    Gaming Peripherals Watch · Static dashboard, generated daily.
+  </footer>
+</main>
+
+<script src="assets/theme.js"></script>
+</body>
+</html>
