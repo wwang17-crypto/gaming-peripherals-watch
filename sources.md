@@ -64,7 +64,8 @@ Cover all Logitech G gaming categories — mice, keyboards, AND sim gear (G PRO 
 - r/simracing, r/Logitech_G_Sim (sim wheel community)
 - Logitech community forums
 - Twitter/X mentions of @LogitechG
-- Amazon / Best Buy review streams for current Logitech gaming SKUs
+- **Amazon customer reviews** for current Logitech G gaming SKUs — prioritize recent 1–3 star "verified purchase" reviews (durability, build quality, feature complaints), and wishlist-style suggestions in 4–5 star review bodies
+- Best Buy review streams for current Logitech gaming SKUs
 - YouTube comment sections on recent Logitech reviews (Rocket Jump Ninja, Optimum, Hardware Canucks, Boosted Media, Super GT for sim)
 
 ## Announcement sources

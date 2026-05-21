@@ -35,7 +35,7 @@ Search for wishlist requests, feature requests, and complaints about **Logitech 
 
 Skip Logitech controllers (F310/F710 are EOL / niche, not worth tracking).
 
-Sources: r/LogitechG, r/MouseReview, r/MechanicalKeyboards, r/simracing, r/Logitech_G_Sim, Logitech community forums, recent YouTube review comments (incl. Boosted Media / Super GT for sim), X/Twitter mentions of @LogitechG.
+Sources: r/LogitechG, r/MouseReview, r/MechanicalKeyboards, r/simracing, r/Logitech_G_Sim, Logitech community forums, recent YouTube review comments (incl. Boosted Media / Super GT for sim), X/Twitter mentions of @LogitechG, **Amazon customer reviews** for current Logitech G gaming SKUs (look at recent 1–3 star reviews for complaints, and "verified purchase" reviewer wishlists in the body text).
 
 Group findings into **Complaints**, **Wishlist**, **Comparisons**. For each, capture: SKU, summary (1–2 sentences), source URL, sentiment volume (low/medium/high based on whether it's a single mention vs recurring theme).
 
