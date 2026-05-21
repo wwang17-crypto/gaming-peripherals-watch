@@ -54,8 +54,8 @@ if (-not (Test-Path $reportFile)) {
 Log "Report generated: $reportFile"
 Log "Committing to git..."
 
-# Pipe stderr through Out-Null/log without 2>&1 to avoid PS 5.1 NativeCommandError wrapping.
-git add "reports/$today.html" "index.html" | Out-Null
+# 2>&1 is safe now that $ErrorActionPreference is not "Stop" — stderr is captured into the log.
+git add "reports/$today.html" "index.html" 2>&1 | ForEach-Object { Add-Content -Path $logFile -Value "[git add] $_" -Encoding utf8 }
 if ($LASTEXITCODE -ne 0) { Log "ERROR: git add failed (exit $LASTEXITCODE)"; exit 1 }
 
 git diff --cached --quiet
@@ -64,10 +64,10 @@ if ($LASTEXITCODE -eq 0) {
     exit 0
 }
 
-git commit -m "Daily report $today" | ForEach-Object { Add-Content -Path $logFile -Value $_ -Encoding utf8 }
+git commit -m "Daily report $today" 2>&1 | ForEach-Object { Add-Content -Path $logFile -Value "[git commit] $_" -Encoding utf8 }
 if ($LASTEXITCODE -ne 0) { Log "ERROR: git commit failed (exit $LASTEXITCODE)"; exit 1 }
 
-git push | ForEach-Object { Add-Content -Path $logFile -Value $_ -Encoding utf8 }
+git push origin HEAD 2>&1 | ForEach-Object { Add-Content -Path $logFile -Value "[git push] $_" -Encoding utf8 }
 if ($LASTEXITCODE -ne 0) { Log "ERROR: git push failed (exit $LASTEXITCODE)"; exit 1 }
 
 $duration = [int]((Get-Date) - $startTime).TotalSeconds
