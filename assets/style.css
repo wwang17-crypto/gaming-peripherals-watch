@@ -16,6 +16,8 @@
   --warn-soft: rgba(228, 166, 101, .14);
   --info: #7ab4e6;
   --info-soft: rgba(122, 180, 230, .14);
+  --purple: #b48fdc;
+  --purple-soft: rgba(180, 143, 220, .14);
   --logo-bg: #f3f1ea;
   --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
   --shadow-md: 0 6px 18px rgba(0,0,0,.35);
@@ -42,6 +44,8 @@
   --warn-soft: #fbf0df;
   --info: #2a5d8a;
   --info-soft: #e5eef5;
+  --purple: #6b40a1;
+  --purple-soft: #efe7f8;
   --logo-bg: #ffffff;
   --shadow-sm: 0 1px 2px rgba(20,20,15,.04);
   --shadow-md: 0 4px 16px rgba(20,20,15,.06);
@@ -320,9 +324,36 @@ a:hover { text-decoration: underline; }
 }
 .tag.category-mouse { background: var(--info-soft); color: var(--info); }
 .tag.category-keyboard { background: var(--accent-soft); color: var(--accent); }
+.tag.category-sim { background: var(--warn-soft); color: var(--warn); }
+.tag.category-controller { background: var(--purple-soft); color: var(--purple); }
 .tag.vol-high { background: var(--danger-soft); color: var(--danger); }
 .tag.vol-medium { background: var(--warn-soft); color: var(--warn); }
 .tag.vol-low { background: var(--surface-2); color: var(--text-soft); }
+
+/* Subsection within a section (used to group cards by category) */
+.subsection { margin-top: 22px; }
+.subsection:first-of-type { margin-top: 4px; }
+.subhead {
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.subhead .subcount {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: var(--text-soft);
+}
 
 /* Feedback 3-column layout */
 .columns {
