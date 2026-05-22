@@ -82,13 +82,26 @@ Group findings into **Complaints**, **Wishlist**, **Comparisons**. For each, cap
 
   If you cannot produce a deep link to the originating thread/post/comment/review, **omit the finding entirely** — do not list it with a fallback to a landing page. A shorter, fully-linkable report is better than padding with unverifiable items.
 
-  **Cross-thread / recurring-theme exception.** When a feedback item summarizes a sentiment seen across MULTIPLE threads (not one specific post), you MAY link to a Reddit search URL that surfaces those threads. The search URL must include `restrict_sr=1` and a relevant query — never a bare subreddit. Examples:
-  - ✅ `https://www.reddit.com/r/LogitechG/search/?q=PowerPlay&restrict_sr=1&sort=new`
-  - ✅ `https://www.reddit.com/r/simracing/search/?q=Logitech+G923+successor&restrict_sr=1&sort=new`
-  - ❌ `https://www.reddit.com/r/LogitechG/` (bare subreddit — FORBIDDEN even for cross-thread themes)
-  - ❌ `https://www.reddit.com/r/LogitechG/top/` (sorted subreddit landing — also forbidden)
+  **Cross-thread / recurring-theme exception.** When a feedback item summarizes a sentiment seen across MULTIPLE threads/videos/reviews (not one specific post), you MAY link to a search URL that surfaces those threads. The search URL must contain a relevant query specific to the signal — never a bare landing page. Accepted search-URL patterns per platform:
 
-  Bare subreddit / channel / forum-root URLs are never acceptable. If you cannot deep-link AND cannot construct a search URL that surfaces the signal, omit the item.
+  - **Reddit:** `https://www.reddit.com/r/{sub}/search/?q={query}&restrict_sr=1&sort=new`
+    - ✅ `https://www.reddit.com/r/LogitechG/search/?q=PowerPlay&restrict_sr=1&sort=new`
+    - ❌ `https://www.reddit.com/r/LogitechG/` (bare subreddit)
+    - ❌ `https://www.reddit.com/r/LogitechG/top/` (sorted landing)
+  - **Logitech community forums (and other Salesforce/SAP-style forums where direct thread URLs are fragile):** `https://www.google.com/search?q=site%3Acommunity.logitech.com+{query}`
+    - ✅ `https://www.google.com/search?q=site%3Acommunity.logitech.com+G915+X+dongle+disconnect`
+    - ❌ `https://community.logitech.com/` (forum root)
+  - **YouTube (for cross-video creator coverage):** `https://www.youtube.com/results?search_query={query}` — but prefer a specific video URL when one exists.
+    - ✅ `https://www.youtube.com/results?search_query=Boosted+Media+PRO+Racing+Wheel+vs+Fanatec+CSL+DD`
+    - ✅ `https://www.youtube.com/watch?v=xxxxxxxxxxx` (specific video — preferred)
+    - ❌ `https://www.youtube.com/@BoostedMedia` (channel page)
+  - **X / Twitter:** prefer a specific post URL. If summarizing a thread of replies, link the originating post, not the profile.
+    - ❌ `https://x.com/LogitechG` (profile page)
+  - **Amazon (for cross-review patterns on a single SKU):** the product reviews page anchored to the SKU is acceptable, but the bare product page is not.
+    - ✅ `https://www.amazon.com/product-reviews/B0XXXXX/?filterByStar=one_star&reviewerType=verified_purchase` (filtered reviews — preferred for complaints)
+    - ❌ `https://www.amazon.com/dp/B0XXXXX/` (bare product page)
+
+  Bare subreddit / channel / forum-root / profile / product URLs are NEVER acceptable. If you cannot deep-link AND cannot construct a search URL that surfaces the signal, omit the item.
 - The theme-toggle button block (two SVG icons) must be present in the topbar — copy verbatim from the sample.
 - Topbar nav for report pages: `<a href="../index.html">← All reports</a>` and `<a href="../about.html">About</a>`. Do not link to .md files from HTML pages — they render as raw text in browsers.
 
