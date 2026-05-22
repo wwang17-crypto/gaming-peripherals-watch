@@ -68,6 +68,19 @@ Group findings into **Complaints**, **Wishlist**, **Comparisons**. For each, cap
   ```
 - Use real source URLs in `<a href="..." target="_blank" rel="noopener">`. Never use `#` placeholder in real reports. The whole announcement card is clickable via stretched-link CSS — the footer source URL is the destination, so it must be the canonical link for that finding.
 - Feedback items in the Complaints / Wishlist / Comparisons columns are also clickable via stretched-link. Each feedback item must have exactly ONE `<a>` inside its `.meta` block, and that link must be the canonical source URL for that signal.
+- **Deep-link requirement for feedback sources.** The `<a>` URL must point to the SPECIFIC thread / post / comment / review that contains the signal — never to a landing page or homepage. Examples of correct vs wrong:
+  - ✅ `https://www.reddit.com/r/LogitechG/comments/1abc234/g_pro_x_superlight_2_scroll_wheel_issue/`
+  - ❌ `https://www.reddit.com/r/LogitechG/` (subreddit homepage)
+  - ✅ `https://www.youtube.com/watch?v=xxxxxxxxxxx&lc=UgxAbCdEf...` (deep-linked comment)
+  - ❌ `https://www.youtube.com/@RocketJumpNinja` (channel page)
+  - ✅ `https://www.amazon.com/gp/customer-reviews/R1A2B3C4D5E6F7/` (specific review)
+  - ❌ `https://www.amazon.com/dp/B0XXXXX/` (product page)
+  - ✅ `https://x.com/username/status/1234567890123456789` (specific post)
+  - ❌ `https://x.com/LogitechG` (profile page)
+  - ✅ `https://community.logitech.com/s/question/0D5...../some-thread-title` (specific thread)
+  - ❌ `https://community.logitech.com/` (forum root)
+
+  If you cannot produce a deep link to the originating thread/post/comment/review, **omit the finding entirely** — do not list it with a fallback to a landing page. A shorter, fully-linkable report is better than padding with unverifiable items.
 - The theme-toggle button block (two SVG icons) must be present in the topbar — copy verbatim from the sample.
 - Topbar nav for report pages: `<a href="../index.html">← All reports</a>` and `<a href="../about.html">About</a>`. Do not link to .md files from HTML pages — they render as raw text in browsers.
 
