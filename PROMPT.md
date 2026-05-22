@@ -81,6 +81,14 @@ Group findings into **Complaints**, **Wishlist**, **Comparisons**. For each, cap
   - ❌ `https://community.logitech.com/` (forum root)
 
   If you cannot produce a deep link to the originating thread/post/comment/review, **omit the finding entirely** — do not list it with a fallback to a landing page. A shorter, fully-linkable report is better than padding with unverifiable items.
+
+  **Cross-thread / recurring-theme exception.** When a feedback item summarizes a sentiment seen across MULTIPLE threads (not one specific post), you MAY link to a Reddit search URL that surfaces those threads. The search URL must include `restrict_sr=1` and a relevant query — never a bare subreddit. Examples:
+  - ✅ `https://www.reddit.com/r/LogitechG/search/?q=PowerPlay&restrict_sr=1&sort=new`
+  - ✅ `https://www.reddit.com/r/simracing/search/?q=Logitech+G923+successor&restrict_sr=1&sort=new`
+  - ❌ `https://www.reddit.com/r/LogitechG/` (bare subreddit — FORBIDDEN even for cross-thread themes)
+  - ❌ `https://www.reddit.com/r/LogitechG/top/` (sorted subreddit landing — also forbidden)
+
+  Bare subreddit / channel / forum-root URLs are never acceptable. If you cannot deep-link AND cannot construct a search URL that surfaces the signal, omit the item.
 - The theme-toggle button block (two SVG icons) must be present in the topbar — copy verbatim from the sample.
 - Topbar nav for report pages: `<a href="../index.html">← All reports</a>` and `<a href="../about.html">About</a>`. Do not link to .md files from HTML pages — they render as raw text in browsers.
 
