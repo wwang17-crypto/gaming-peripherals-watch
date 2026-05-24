@@ -18,7 +18,7 @@
   }
 
   function setupShowMore() {
-    var selector = '.card-summary, .feedback-item > p';
+    var selector = '.card-summary, .feedback-item > p, .index-card .summary';
     document.querySelectorAll(selector).forEach(function (el) {
       if (el.classList.contains('empty')) return;
       if (el.dataset.smInit === '1') return;
