@@ -330,6 +330,10 @@ a:hover { text-decoration: underline; }
 .tag.vol-medium { background: var(--warn-soft); color: var(--warn); }
 .tag.vol-low { background: var(--surface-2); color: var(--text-soft); }
 
+.tag.sent-complaint { background: var(--danger-soft); color: var(--danger); }
+.tag.sent-wishlist { background: var(--accent-soft); color: var(--accent); }
+.tag.sent-comparison { background: var(--info-soft); color: var(--info); }
+
 /* Subsection within a section (used to group cards by category) */
 .subsection { margin-top: 22px; }
 .subsection:first-of-type { margin-top: 4px; }

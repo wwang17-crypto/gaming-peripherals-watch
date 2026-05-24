@@ -37,7 +37,9 @@ Skip Logitech controllers (F310/F710 are EOL / niche, not worth tracking).
 
 Sources: r/LogitechG, r/MouseReview, r/MechanicalKeyboards, r/simracing, r/Logitech_G_Sim, Logitech community forums, recent YouTube review comments (incl. Boosted Media / Super GT for sim), X/Twitter mentions of @LogitechG, **Amazon customer reviews** for current Logitech G gaming SKUs (look at recent 1–3 star reviews for complaints, and "verified purchase" reviewer wishlists in the body text).
 
-Group findings into **Complaints**, **Wishlist**, **Comparisons**. For each, capture: SKU, summary (1–2 sentences), source URL, sentiment volume (low/medium/high based on whether it's a single mention vs recurring theme).
+For each finding capture: **product category** (mouse / keyboard / sim gear), **sentiment** (Complaint / Wishlist / Comparison), SKU, summary (1–2 sentences), source URL, **sentiment volume** (low/medium/high based on whether it's a single mention vs recurring theme).
+
+The report groups Section 2 findings by product category first (matching Section 1's structure), then surfaces sentiment via a per-item tag. There is no Logitech controller subsection content (F310/F710 are EOL — not tracked) — that subsection always renders empty.
 
 ## HTML output rules
 
@@ -60,14 +62,38 @@ Group findings into **Complaints**, **Wishlist**, **Comparisons**. For each, cap
   - `tag category-sim` for sim gear
   - `tag category-controller` for controllers
 - Volume tag: `tag vol-high`, `tag vol-medium`, or `tag vol-low`.
-- If a Logitech feedback column (Complaints / Wishlist / Comparisons) has zero findings, render `<p class="empty">No new findings.</p>` inside that column rather than omitting the column.
+- **Section 2 structure — four subsections (same shape as Section 1).** Wrap Section 2's content in exactly four `<div class="subsection">` blocks in this order: Mice, Keyboards, Sim Gear, Controllers. Each subsection wraps a `<div class="column">` containing a `<ul class="feedback-list">`. Pattern:
+  ```html
+  <div class="subsection">
+    <h3 class="subhead">{Category} <span class="subcount">{N} items</span></h3>
+    <div class="column">
+      <ul class="feedback-list">
+        <li class="feedback-item">
+          <span class="sku">{SKU}</span>
+          <p>{1–2 sentence summary}</p>
+          <div class="meta">
+            <span class="tag sent-{complaint|wishlist|comparison}">{Complaint|Wishlist|Comparison}</span>
+            <span class="tag vol-{high|medium|low}">{High|Medium|Low} volume</span>
+            <span><a href="{deep link}" target="_blank" rel="noopener">{source label}</a></span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  ```
+  For an empty subsection, omit the `<ul>` and put `<p class="empty">No new findings.</p>` directly inside the `<div class="column">`. The **Controllers subsection always renders empty** — Logitech gaming controllers (F310/F710) are EOL and not tracked. Use this body: `<p class="empty">No new findings. (Logitech gaming controllers — F310/F710 — are EOL and not tracked.)</p>`
+- Sentiment tag classes (Section 2 only):
+  - `tag sent-complaint` (red) for complaints
+  - `tag sent-wishlist` (green) for wishlist / feature requests
+  - `tag sent-comparison` (blue) for competitive comparisons
 - Always include the "Today's takeaways" notes block at the end — one or two sentences linking the day's signals to something actionable. Cross-category observations (e.g., "Logitech and Fanatec both refreshed mid-tier wheels this week") are valuable.
-- Update strip at top must show: generated timestamp, per-category announcement counts, and Logitech signal breakdown. Format:
+- Update strip at top must show: generated timestamp, per-category announcement counts, and Logitech signal breakdown by sentiment. Format:
   ```
   Generated: {timestamp} · Mice: {N} · Keyboards: {N} · Sim: {N} · Controllers: {N} · Logitech signals: {X complaints · Y wishlist · Z comparisons}
   ```
+  The Logitech-signals breakdown stays by sentiment (not by product) because product is already visible in each subsection header.
 - Use real source URLs in `<a href="..." target="_blank" rel="noopener">`. Never use `#` placeholder in real reports. The whole announcement card is clickable via stretched-link CSS — the footer source URL is the destination, so it must be the canonical link for that finding.
-- Feedback items in the Complaints / Wishlist / Comparisons columns are also clickable via stretched-link. Each feedback item must have exactly ONE `<a>` inside its `.meta` block, and that link must be the canonical source URL for that signal.
+- Section 2 feedback items are also clickable via stretched-link. Each feedback item must have exactly ONE `<a>` inside its `.meta` block, and that link must be the canonical source URL for that signal.
 - **Deep-link requirement for feedback sources.** The `<a>` URL must point to the SPECIFIC thread / post / comment / review that contains the signal — never to a landing page or homepage. Examples of correct vs wrong:
   - ✅ `https://www.reddit.com/r/LogitechG/comments/1abc234/g_pro_x_superlight_2_scroll_wheel_issue/`
   - ❌ `https://www.reddit.com/r/LogitechG/` (subreddit homepage)
