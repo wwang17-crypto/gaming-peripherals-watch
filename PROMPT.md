@@ -36,6 +36,10 @@ Two failure modes this rule catches:
 
 The post-generation audit verifies this: any Section 1 source older than 7 days **aborts the commit** (the report does not get pushed). Articles 2–7 days old produce a warning but do not block. Don't ship findings whose source URL pre-dates the announcement by months or years.
 
+**Empty Section 1 is acceptable — even expected on slow news days.** It is CORRECT (not a failure) for some or all Section 1 subsections to render `<p class="empty">No new findings.</p>`. A report shipped with 0 announcements across all four categories is a valid daily report. Do NOT pad Section 1 by reaching back to weeks-old or months-old launches just to fill the page. The bar for inclusion is "a fresh source from the last 48 hours exists" — if that bar isn't met, the item is omitted, full stop. A 0-announcement day with honest empty subsections is a valid report; a 4-announcement day held together by stale sources is not.
+
+**Do not recycle prior reports.** If you find that a previous day's report covered a SKU and you cannot find genuinely fresh news for it today, do not re-list it. Section 1 is "what's new in the last 48 hours" — not "what's been newsworthy lately". Check the last 7 days of `reports/*.html` before listing any SKU.
+
 For each finding capture: brand, product name, category, key specs (category-appropriate — e.g. sensor/switches for mice/keyboards; torque/rotation/connection for sim wheels; sticks/triggers/connectivity for controllers), MSRP if known, availability date, source URL, source type tag (Press release / Launch / Leak / Teaser / Event coverage).
 
 ## Search 2 — Logitech feedback signals
