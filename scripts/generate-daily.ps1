@@ -83,6 +83,74 @@ if ($violations.Count -gt 0) {
 }
 Log "URL audit passed: no landing-page fallbacks detected."
 
+# --- Date audit: catch stale source articles (e.g. 2024 article cited as "today's news") ---
+# Section 1 announcements must reference sources published within the last 48h.
+# Hard fail at >7 days old, warn at 2-7 days. Articles without parseable dates: warn only.
+function Get-PublishDate {
+    param([string]$url)
+    # X / Twitter: decode Snowflake ID timestamp — no HTTP fetch needed
+    if ($url -match '(?:x|twitter)\.com/[^/]+/status/(\d+)') {
+        try {
+            $tweetId = [int64]$Matches[1]
+            $epochMs = ($tweetId -shr 22) + 1288834974657  # Twitter epoch: 2010-11-04T01:42:54.657Z
+            return [DateTimeOffset]::FromUnixTimeMilliseconds($epochMs).LocalDateTime
+        } catch { return $null }
+    }
+    try {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        $resp = Invoke-WebRequest -Uri $url -TimeoutSec 15 -UseBasicParsing -ErrorAction Stop -UserAgent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        $html = $resp.Content
+    } catch { return $null }
+    $datePatterns = @(
+        'property=["'']article:published_time["'']\s+content=["'']([^"'']+)["'']',
+        'name=["'']article:published_time["'']\s+content=["'']([^"'']+)["'']',
+        'property=["'']og:article:published_time["'']\s+content=["'']([^"'']+)["'']',
+        '"datePublished"\s*:\s*"([^"]+)"',
+        'itemprop=["'']datePublished["''][^>]*content=["'']([^"'']+)["'']',
+        'itemprop=["'']datePublished["''][^>]*datetime=["'']([^"'']+)["'']',
+        '<time[^>]+datetime=["'']([^"'']+)["'']'
+    )
+    foreach ($p in $datePatterns) {
+        if ($html -match $p) {
+            try { return [DateTime]::Parse($Matches[1]) } catch { continue }
+        }
+    }
+    return $null
+}
+
+Log "Auditing Section 1 source publish dates (HTTP fetches, ~15s/URL max)..."
+$now = Get-Date
+$staleViolations = @()
+$dateWarnings = @()
+$section1Urls = @([regex]::Matches($reportText, '<span class="source"><a href="([^"]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+
+foreach ($url in $section1Urls) {
+    $pubDate = Get-PublishDate $url
+    if ($null -eq $pubDate) {
+        $dateWarnings += "  ? unparseable date: $url"
+        continue
+    }
+    $ageDays = [Math]::Round(($now - $pubDate).TotalDays, 1)
+    $pubStr = $pubDate.ToString('yyyy-MM-dd')
+    if ($ageDays -gt 7) {
+        $staleViolations += "  - ${ageDays}d old (pub ${pubStr}): $url"
+    } elseif ($ageDays -gt 2) {
+        $dateWarnings += "  - ${ageDays}d old (pub ${pubStr}): $url"
+    }
+}
+
+if ($staleViolations.Count -gt 0) {
+    Log "ERROR: $($staleViolations.Count) Section 1 source(s) older than 7 days:"
+    foreach ($v in $staleViolations) { Log $v }
+    Log "Aborting before commit. Report file left in place for inspection."
+    exit 1
+}
+if ($dateWarnings.Count -gt 0) {
+    Log "WARN: $($dateWarnings.Count) Section 1 source(s) >48h old or date-unparseable:"
+    foreach ($w in $dateWarnings) { Log $w }
+}
+Log "Date audit passed."
+
 Log "Committing to git..."
 
 # 2>&1 is safe now that $ErrorActionPreference is not "Stop" — stderr is captured into the log.

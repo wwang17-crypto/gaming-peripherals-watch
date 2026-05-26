@@ -23,6 +23,19 @@ Search for new announcements, launches, or leaks across **four product categorie
 
 Prefer official press releases, brand newsrooms, and reputable outlets (The Verge, Tom's Hardware, PCGamer, RTINGS, Eurogamer, Push Square, Pure Xbox; for sim: Boosted Media, Sim Racing Today, Race Department, OverTake). Skip rumors older than 48 hours and skip products already covered in the last 7 days of reports.
 
+**Date-freshness rule (critical — verify before including any finding).** The source article's publish date must be within the last 48 hours of today (today = the date in this prompt). Verify by checking each candidate URL:
+
+- **Tech-press articles** (Tom's Hardware, PC Gamer, The Verge, etc.) — look for the byline date ("Published Jan 12, 2024" style) or the `<meta property="article:published_time">` tag. If the article is dated months/years ago, omit the finding even if the headline looks "new".
+- **Brand newsroom press releases** — check the release date on the press page itself.
+- **X / Twitter posts** — tweet timestamp is visible on the post.
+- **Reddit / forum threads** — post date is visible.
+
+Two failure modes this rule catches:
+1. **Stale article masquerading as new** — the news genuinely IS old (e.g., a 2024 Tom's Hardware article surfacing again in 2026 search results). Omit the finding entirely.
+2. **Today's news, wrong source** — the news is genuinely new but you cited an older article that mentioned the product tangentially. Find the actual recent source (today's press release, today's launch tweet, today's article) and use that URL instead.
+
+The post-generation audit verifies this: any Section 1 source older than 7 days **aborts the commit** (the report does not get pushed). Articles 2–7 days old produce a warning but do not block. Don't ship findings whose source URL pre-dates the announcement by months or years.
+
 For each finding capture: brand, product name, category, key specs (category-appropriate — e.g. sensor/switches for mice/keyboards; torque/rotation/connection for sim wheels; sticks/triggers/connectivity for controllers), MSRP if known, availability date, source URL, source type tag (Press release / Launch / Leak / Teaser / Event coverage).
 
 ## Search 2 — Logitech feedback signals
