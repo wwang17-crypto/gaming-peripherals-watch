@@ -52,6 +52,37 @@ if (-not (Test-Path $reportFile)) {
 }
 
 Log "Report generated: $reportFile"
+
+# --- URL audit: catch landing-page fallbacks before pushing ---
+# See feedback memory on citation-URLs: Claude silently falls back to landing pages
+# when web search can't surface a specific thread/post/release. Without this gate,
+# bad URLs ship to GitHub Pages and the deep-link rule in PROMPT.md is meaningless.
+$badPatterns = @(
+    @{ Name = 'Bare subreddit';          Pattern = 'href="https?://(?:www\.)?reddit\.com/r/[^/"]+/?"' }
+    @{ Name = 'Brand newsroom root';     Pattern = 'href="https?://[^"]+/newsroom/?"' }
+    @{ Name = 'X/Twitter profile';       Pattern = 'href="https?://(?:www\.)?(?:x|twitter)\.com/[^/"]+/?"' }
+    @{ Name = 'YouTube channel/profile'; Pattern = 'href="https?://(?:www\.)?youtube\.com/(?:@[^/"]+|c/[^/"]+|channel/[^/"]+|user/[^/"]+)/?"' }
+    @{ Name = 'Forum root';              Pattern = 'href="https?://community\.[^/"]+/?"' }
+    @{ Name = 'Bare Amazon product';     Pattern = 'href="https?://(?:www\.)?amazon\.[a-z.]+/dp/[^/"]+/?"' }
+)
+
+$reportText = Get-Content $reportFile -Raw
+$violations = @()
+foreach ($p in $badPatterns) {
+    foreach ($m in [regex]::Matches($reportText, $p.Pattern)) {
+        $violations += "  - $($p.Name): $($m.Value)"
+    }
+}
+
+if ($violations.Count -gt 0) {
+    Log "ERROR: $($violations.Count) landing-page URL violation(s) detected in $reportFile:"
+    foreach ($v in $violations) { Log $v }
+    Log "Aborting before commit. Report file left in place for inspection."
+    Log "Fix manually and re-run, or update PROMPT.md and trigger the scheduled task."
+    exit 1
+}
+Log "URL audit passed: no landing-page fallbacks detected."
+
 Log "Committing to git..."
 
 # 2>&1 is safe now that $ErrorActionPreference is not "Stop" — stderr is captured into the log.
