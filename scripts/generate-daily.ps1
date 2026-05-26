@@ -75,7 +75,7 @@ foreach ($p in $badPatterns) {
 }
 
 if ($violations.Count -gt 0) {
-    Log "ERROR: $($violations.Count) landing-page URL violation(s) detected in $reportFile:"
+    Log "ERROR: $($violations.Count) landing-page URL violation(s) detected in ${reportFile}:"
     foreach ($v in $violations) { Log $v }
     Log "Aborting before commit. Report file left in place for inspection."
     Log "Fix manually and re-run, or update PROMPT.md and trigger the scheduled task."
