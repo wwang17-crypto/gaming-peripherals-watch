@@ -28,6 +28,17 @@ function Log($msg) {
     Add-Content -Path $logFile -Value $line -Encoding utf8
 }
 
+# An aborted run still leaves Claude's index.html edit in the working tree; the
+# next day's `git add index.html` then commits an index entry pointing at a report
+# file that was never committed (the 2026-06-12 dangling-link bug). Roll index.html
+# back to HEAD on every abort so a blocked run leaks no orphan entry. The report
+# file itself is left untracked for inspection — future runs only `git add` their
+# own dated file, so it never gets swept into a commit.
+function Revert-IndexMutation {
+    git checkout -- index.html 2>&1 | ForEach-Object { Add-Content -Path $logFile -Value "[revert] $_" -Encoding utf8 }
+    Log "Reverted index.html to HEAD (aborted run — no index entry leaked)."
+}
+
 Log "=== Daily report generation: $today ==="
 Log "Project: $projectPath"
 Log "claude : $((Get-Command claude -ErrorAction SilentlyContinue).Source)"
@@ -43,11 +54,12 @@ Log "Invoking Claude Code..."
 $null | & claude --print --dangerously-skip-permissions $prompt 2>&1 | ForEach-Object {
     Add-Content -Path $logFile -Value $_ -Encoding utf8
 }
-if ($LASTEXITCODE -ne 0) { Log "ERROR: claude exited with code $LASTEXITCODE"; exit 1 }
+if ($LASTEXITCODE -ne 0) { Log "ERROR: claude exited with code $LASTEXITCODE"; Revert-IndexMutation; exit 1 }
 
 $reportFile = "reports\$today.html"
 if (-not (Test-Path $reportFile)) {
     Log "ERROR: Expected report file $reportFile was not created. Aborting commit."
+    Revert-IndexMutation
     exit 1
 }
 
@@ -79,6 +91,7 @@ if ($violations.Count -gt 0) {
     foreach ($v in $violations) { Log $v }
     Log "Aborting before commit. Report file left in place for inspection."
     Log "Fix manually and re-run, or update PROMPT.md and trigger the scheduled task."
+    Revert-IndexMutation
     exit 1
 }
 Log "URL audit passed: no landing-page fallbacks detected."
@@ -143,6 +156,7 @@ if ($staleViolations.Count -gt 0) {
     Log "ERROR: $($staleViolations.Count) Section 1 source(s) older than 7 days:"
     foreach ($v in $staleViolations) { Log $v }
     Log "Aborting before commit. Report file left in place for inspection."
+    Revert-IndexMutation
     exit 1
 }
 if ($dateWarnings.Count -gt 0) {
