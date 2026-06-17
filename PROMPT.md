@@ -40,24 +40,21 @@ The post-generation audit verifies this: any Section 1 source older than 7 days 
 
 **Do not recycle prior reports.** If you find that a previous day's report covered a SKU and you cannot find genuinely fresh news for it today, do not re-list it. Section 1 is "what's new in the last 48 hours" — not "what's been newsworthy lately". Check the last 7 days of `reports/*.html` before listing any SKU.
 
-### Search 1b — Direct newsroom sweep (recall backstop, REQUIRED)
+### Search 1b — Per-brand recency sweep (recall backstop, REQUIRED)
 
-Generic keyword search has poor recall: a real official press release can fail to surface on any given run, producing a false "0-announcement day". (This is exactly how the Logitech G3 Series launch — G305 X SUPERLIGHT + G316 X 98, announced 2026-06-16 — was missed on the 2026-06-17 run.) To close that gap, **after the keyword search above, also fetch each priority brand's official press/newsroom page directly** and scan the top entries for anything dated within the last 48 hours. Do NOT rely on keyword search alone to decide a category is empty.
+Generic keyword search has poor recall: a real official press release can fail to surface on any given run, producing a false "0-announcement day". (This is exactly how the Logitech G3 Series launch — G305 X SUPERLIGHT + G316 X 98, announced 2026-06-16 — was missed on the 2026-06-17 run.) Close that gap with a **per-brand recency sweep** of the priority brands below, **in addition to** the keyword search above. Do NOT rely on the generic keyword search alone to decide a category is empty.
 
-Check these directly every run (use the brand's site search or a `site:` Google query if a URL 404s):
+For each priority brand, run a targeted recent-news query and scan for anything dated within the last 48 hours. Use whichever of these surfaces fresh results:
 
-- **Logitech G** (highest priority — also the Section 2 subject): https://news.logitech.com/press-releases and https://ir.logitech.com/press-releases
-- **Razer:** https://press.razer.com/
-- **Corsair:** https://newsroom.corsair.com/
-- **SteelSeries:** https://steelseries.com/blog
-- **ASUS ROG:** https://rog.asus.com/articles/
-- **Wooting:** https://wooting.io/news
-- **Fanatec:** https://fanatec.com/ (News/Blog) · **MOZA Racing:** https://mozaracing.com/ · **Thrustmaster:** https://www.thrustmaster.com/ (press/news)
-- **Xbox:** https://news.xbox.com/ · **PlayStation:** https://blog.playstation.com/ · **Nintendo:** https://www.nintendo.com/us/whatsnew/ · **8BitDo:** https://www.8bitdo.com/news/
+- A recency-scoped news search, e.g. Google News `{brand} {mouse|keyboard|wheel|controller} announced` with a past-week / `when:7d` filter, or `{brand} new {product} 2026-06`.
+- A `site:{brand-domain}` query for the newsroom path sorted by recent, e.g. `site:news.logitech.com 2026`.
+- Tech-press coverage (Tom's Hardware, The Verge, PC Gamer, RTINGS, Eurogamer, Push Square, Pure Xbox; sim: Boosted Media, OverTake) of a launch from that brand in the window.
 
-For any other brand in `sources.md`, a `site:{brand-domain} press release {month} {year}` Google query is the fallback sweep.
+Priority brands (newsroom URL for reference — but see the caveat below): **Logitech G** (news.logitech.com, ir.logitech.com — highest priority, also the Section 2 subject), Razer (press.razer.com), Corsair (newsroom.corsair.com), SteelSeries (steelseries.com/blog), ASUS ROG (rog.asus.com/articles), Wooting (wooting.io/news), Fanatec, MOZA Racing, Thrustmaster, Xbox (news.xbox.com), PlayStation (blog.playstation.com), Nintendo, 8BitDo. For any other brand in `sources.md`, a `site:{brand-domain} announcement` recent query is the fallback.
 
-Everything found this way is still subject to the **48-hour freshness rule, the no-recycle rule, and the deep-link rule** above — a regional availability date or a re-announcement of an already-covered SKU does NOT qualify; only a genuinely fresh announcement does. The point of this step is purely to stop real press releases from being missed by keyword-search luck — it does not lower the inclusion bar.
+**Critical — a failed or empty page fetch is NOT evidence of "no news".** Many newsrooms are JS-rendered (news.logitech.com, ir.logitech.com both return a blank list to a plain fetch) or bot-blocked (403 / connection refused — observed on Corsair, 8BitDo, Fanatec). A direct page fetch can therefore come back empty or partial even on a day with a real announcement. If a newsroom page won't load or renders no dated entries, you MUST fall back to a Google News / `site:` / tech-press search for that brand before treating its categories as empty. **Never declare a category empty off the back of a fetch that errored or returned no rendered content** — only off a search that actually ran and returned no in-window results.
+
+Everything found this way is still subject to the **48-hour freshness rule, the no-recycle rule, and the deep-link rule** above — a regional availability date or a re-announcement of an already-covered SKU does NOT qualify; only a genuinely fresh announcement does. This step does not lower the inclusion bar; it only stops real press releases from being missed by keyword-search luck or by an unreadable newsroom page.
 
 For each finding capture: brand, product name, category, key specs (category-appropriate — e.g. sensor/switches for mice/keyboards; torque/rotation/connection for sim wheels; sticks/triggers/connectivity for controllers), MSRP if known, availability date, source URL, source type tag (Press release / Launch / Leak / Teaser / Event coverage).
 
