@@ -1,4 +1,4 @@
-# Runs Claude Code headlessly to generate today's report, then commits and pushes to GitHub.
+﻿# Runs Claude Code headlessly to generate today's report, then commits and pushes to GitHub.
 # Designed for unattended execution via Windows Task Scheduler.
 
 # NB: deliberately NOT setting $ErrorActionPreference = "Stop".

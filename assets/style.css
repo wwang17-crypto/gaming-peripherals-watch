@@ -552,6 +552,44 @@ a:hover { text-decoration: underline; }
   gap: 12px;
 }
 
+/* Month groups (folded client-side by theme.js; flat list is the source of truth) */
+.month-group {
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+.month-group > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  color: var(--text);
+  user-select: none;
+}
+.month-group > summary::-webkit-details-marker { display: none; }
+.month-group > summary:hover { border-color: var(--border-strong); }
+.month-group .month-label { display: flex; align-items: center; gap: 8px; }
+.month-group .month-label::before {
+  content: "\25B8";
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: transform .15s;
+}
+.month-group[open] .month-label::before { transform: rotate(90deg); }
+.month-group .month-count {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+.month-group[open] > summary { border-bottom: 1px solid var(--border); }
+.month-group .index-list { padding: 14px 16px; }
+
 /* Footer */
 .footer {
   margin-top: 56px;
