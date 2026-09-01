@@ -48,6 +48,20 @@ $prompt = @"
 Today is $today. Read PROMPT.md in this directory and execute its instructions fully: perform the two web searches, write the new report to reports/$today.html using the same HTML structure as reports/2026-05-20.html, and update index.html by prepending a new <li class="index-card"> entry for today. Do not ask for confirmation; proceed automatically. When done, print a one-line summary.
 "@
 
+# Defend against the previous run rather than trusting it to have cleaned up after itself.
+# Revert-IndexMutation only fires on the graceful abort paths below. A run killed mid-flight
+# -- machine sleep, Task Scheduler kill, the workspace trust dialog -- reaches none of them,
+# so index.html keeps the dead run's prepended entry. Tomorrow's `git add index.html` then
+# commits that orphan card, while the report file it points at stays untracked (each run only
+# adds its own reports/$today.html), leaving a 404 on the live site. Observed on 2026-06-12,
+# 07-07, 07-09, 07-24, 08-07 and 08-18. Note this discards ANY uncommitted index.html edit,
+# which matches what Revert-IndexMutation already does on abort; the run is unattended.
+git diff --quiet -- index.html
+if ($LASTEXITCODE -ne 0) {
+    git checkout -- index.html 2>&1 | ForEach-Object { Add-Content -Path $logFile -Value "[pre-run revert] $_" -Encoding utf8 }
+    Log "Discarded a leftover index.html mutation (previous run was killed before its abort path ran)."
+}
+
 Log "Invoking Claude Code..."
 
 # Pipe $null into stdin so claude does not warn about missing stdin in non-interactive sessions.
