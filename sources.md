@@ -2,6 +2,9 @@
 
 ## Brands to track (announcements)
 
+> This list is a **floor, not a ceiling**. A new peripheral from a brand that is not listed
+> still qualifies for Section 1 — see Search 1c in `PROMPT.md`. Add the brand here when you card it.
+
 ### Mice
 - Logitech G (G Pro X Superlight, G502, G703, G305)
 - Razer (DeathAdder, Viper, Basilisk, Naga, Cobra)
@@ -16,6 +19,7 @@
 - ASUS ROG (Gladius, Harpe, Keris)
 - Zowie / BenQ (EC, FK, ZA, S series)
 - Finalmouse, VAXEE, WLMouse, Ninjutso, Cooler Master, NZXT, Pwnage, Vancer
+- XBAB Tech (XA25)
 
 ### Keyboards
 - Logitech G (G Pro, G915, G715, Pro X TKL Rapid)
@@ -71,6 +75,7 @@ Cover all Logitech G gaming categories — mice, keyboards, AND sim gear (G PRO 
 ## Announcement sources
 - Brand newsroom pages, press releases
 - The Verge, Tom's Hardware, PCGamer, RTINGS new-product feeds
+- TechPowerUp, ThinkComputers, Wccftech, Madshrimps — boutique / first-product launches the majors skip
 - Sim-specific: Sim Racing Today, Race Department, Boosted Media, OverTake
 - Controller-specific: Eurogamer, IGN, The Verge, Push Square (PlayStation), Pure Xbox
 - Trade events: CES (Jan), Computex (Jun), Gamescom (Aug), IFA (Sep), SimExpo

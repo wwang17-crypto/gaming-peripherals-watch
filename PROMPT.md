@@ -14,14 +14,14 @@ You are running the daily gaming-peripherals watch for project `d:\03_Claude\Res
 
 ## Search 1 — New product announcements (last 24–48 hours)
 
-Search for new announcements, launches, or leaks across **four product categories** from any brand in `sources.md`:
+Search for new announcements, launches, or leaks across **four product categories**. `sources.md` is the brand list to sweep, but it is a **floor, not a ceiling** — a genuinely new gaming peripheral from a brand that is not on the list still qualifies, and boutique / first-product brands are exactly the ones a fixed list cannot anticipate.
 
 - **Mice** — gaming mice (wired / wireless / superlight / esports).
 - **Keyboards** — gaming keyboards (mech, optical, magnetic / Hall-effect).
 - **Sim gear** — sim racing wheels, pedals, wheelbases (direct drive / belt / gear), shifters, handbrakes.
 - **Controllers** — gamepads for console / PC / mobile (Xbox, PlayStation, Switch, third-party pro controllers, mobile clip controllers).
 
-Prefer official press releases, brand newsrooms, and reputable outlets (The Verge, Tom's Hardware, PCGamer, RTINGS, Eurogamer, Push Square, Pure Xbox; for sim: Boosted Media, Sim Racing Today, Race Department, OverTake). Skip rumors older than 48 hours and skip products already covered in the last 7 days of reports.
+Prefer official press releases, brand newsrooms, and reputable outlets (The Verge, Tom's Hardware, PCGamer, RTINGS, Eurogamer, Push Square, Pure Xbox; for sim: Boosted Media, Sim Racing Today, Race Department, OverTake). Also treat **TechPowerUp, ThinkComputers, Wccftech and Madshrimps** as acceptable Section 1 sources — they carry boutique and first-product launches that the majors skip entirely. (TechPowerUp returns 403 to `WebFetch`; read it via a `curl` fetch from Bash, or cite a mirror that renders.) Skip rumors older than 48 hours and skip products already covered in the last 7 days of reports.
 
 **Date-freshness rule (critical — verify before including any finding).** The source article's publish date must be within the last 48 hours of today (today = the date in this prompt). Verify by checking each candidate URL:
 
@@ -58,6 +58,17 @@ Everything found this way is still subject to the **48-hour freshness rule, the 
 
 For each finding capture: brand, product name, category, key specs (category-appropriate — e.g. sensor/switches for mice/keyboards; torque/rotation/connection for sim wheels; sticks/triggers/connectivity for controllers), MSRP if known, availability date, source URL, source type tag (Press release / Launch / Leak / Teaser / Event coverage).
 
+### Search 1c — Brand-agnostic category sweep (unknown-brand backstop, REQUIRED)
+
+Search 1b sweeps a fixed brand list, so by construction it cannot catch a brand that is not on that list. This is a real gap, not a theoretical one. **The XBAB Tech XA25** — 25 g full-size wired, PAW3950 + Nuvoton M483, 8 kHz, $169, pre-orders Sept 22, 500 units — was announced by the vendor on r/MouseReview on **2026-08-27** and picked up by TechPowerUp and ThinkComputers on **2026-08-28**, in-window for both the Aug 28 and Aug 29 runs. Both runs missed it, and it never appeared even in their exclusion lists: XBAB Tech is a first-product brand absent from `sources.md`, the origin was Reddit (unfetchable at the time), and the press pickup was on outlets outside the preferred list. Neither the keyword search nor the per-brand sweep could reach it.
+
+Run these **brand-free** queries every day, in addition to Searches 1 and 1b:
+
+- `new gaming mouse announced` / `new gaming keyboard announced` / `new sim racing wheel announced` / `new game controller announced`, each with a past-week (`when:7d`) recency filter.
+- The per-category Reddit new-post feeds — `r/MouseReview`, `r/MechanicalKeyboards`, `r/simracing` — using the Reddit access recipe under Search 2. Boutique and first-product brands routinely announce there **before** any press pickup; the XA25 did exactly that.
+
+Judge these hits on the product, not on brand recognition — an unfamiliar brand name is not grounds for exclusion. The 48-hour freshness rule, the no-recycle rule and the deep-link rule all still apply. **When you card a brand that is not in `sources.md`, add it to the appropriate category list in that file in the same run.**
+
 ## Search 2 — Logitech feedback signals
 
 Search for wishlist requests, feature requests, and complaints about **Logitech G gaming mice, keyboards, AND sim gear** posted in the last 7 days. Cover the full Logitech G gaming line:
@@ -69,6 +80,19 @@ Search for wishlist requests, feature requests, and complaints about **Logitech 
 Skip Logitech controllers (F310/F710 are EOL / niche, not worth tracking).
 
 Sources: r/LogitechG, r/MouseReview, r/MechanicalKeyboards, r/simracing, r/Logitech_G_Sim, Logitech community forums, recent YouTube review comments (incl. Boosted Media / Super GT for sim), X/Twitter mentions of @LogitechG, **Amazon customer reviews** for current Logitech G gaming SKUs (look at recent 1–3 star reviews for complaints, and "verified purchase" reviewer wishlists in the body text).
+
+**Reddit access recipe (verified working 2026-09-01 — use it before declaring Section 2 empty).** `WebFetch` on any `reddit.com` URL is refused at the tool layer, and a plain `curl` of a Reddit HTML or `.json` URL returns **403** behind a JS challenge. That combination emptied Section 2 for nineteen consecutive days (0/0/0/0, Aug 13–Sep 1) and is a **tooling failure, not an absence of signal**. The Atom feeds are *not* blocked — fetch them with `curl` from Bash:
+
+- Subreddit new posts: `curl -sSL -A "<desktop UA>" "https://www.reddit.com/r/{sub}/new/.rss"`
+- Targeted search: `curl -sSL -A "<desktop UA>" "https://www.reddit.com/r/{sub}/search.rss?q={query}&restrict_sr=1&sort=new"`
+
+Both return 25 Atom `<entry>` elements, each carrying `<title>`, `<updated>` (the post date — use it to enforce the 7-day window) and `<link href>` (the canonical permalink — use it as the deep link). Three operational notes, each learned the hard way:
+
+- Reddit rate-limits bursts with HTTP **429**. Add `--retry 4 --retry-delay 15 --retry-all-errors` and space the calls out rather than firing them in parallel.
+- `curl` here is a **Windows** binary under Git Bash, so `-o /tmp/x.rss` lands somewhere a POSIX-path reader cannot find. Write output to a path **inside the project directory** and delete it when done.
+- A 429 or an empty parse is **not** evidence of no signal — retry, then report honestly which feeds actually returned data.
+
+Section 2 may only be reported as empty after these feeds have actually been fetched **and returned nothing inside the 7-day window**.
 
 For each finding capture: **product category** (mouse / keyboard / sim gear), **sentiment** (Complaint / Wishlist / Comparison), SKU, summary (1–2 sentences), source URL, **sentiment volume** (low/medium/high based on whether it's a single mention vs recurring theme).
 
@@ -144,7 +168,7 @@ The report groups Section 2 findings by product category first (matching Section
 
   **Cross-thread / recurring-theme exception.** When a feedback item summarizes a sentiment seen across MULTIPLE threads/videos/reviews (not one specific post), you MAY link to a search URL that surfaces those threads. The search URL must contain a relevant query specific to the signal — never a bare landing page. Accepted search-URL patterns per platform:
 
-  - **Reddit:** `https://www.reddit.com/r/{sub}/search/?q={query}&restrict_sr=1&sort=new`
+  - **Reddit:** `https://www.reddit.com/r/{sub}/search/?q={query}&restrict_sr=1&sort=new` — note this is the **citation** form (human-readable); **fetch** the same query through the `.rss` form in the Reddit access recipe above, then cite this one.
     - ✅ `https://www.reddit.com/r/LogitechG/search/?q=PowerPlay&restrict_sr=1&sort=new`
     - ❌ `https://www.reddit.com/r/LogitechG/` (bare subreddit)
     - ❌ `https://www.reddit.com/r/LogitechG/top/` (sorted landing)
